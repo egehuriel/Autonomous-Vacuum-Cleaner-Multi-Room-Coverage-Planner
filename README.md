@@ -1,2 +1,2 @@
 # CSE 211 Term Project
-## Project 8 **
+## Project 8
