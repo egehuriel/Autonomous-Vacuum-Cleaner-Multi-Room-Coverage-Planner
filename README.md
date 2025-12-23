@@ -23,6 +23,6 @@ The project focuses on data structures and algorithmic reasoning, rather than UI
 ## Notes
 The README will be updated as implementation progresses.
 
-##Contributors
+## Contributors
 CSE 211 Project 8 Group
 
