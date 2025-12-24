@@ -51,8 +51,3 @@ void test_linkedlist(){
 
     std::cout << "PASSED" << std::endl;
 }
-
-int main(){
-    test_linkedlist();
-    return 0;
-}

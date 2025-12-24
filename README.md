@@ -16,10 +16,8 @@ The project focuses on data structures and algorithmic reasoning, rather than UI
 5. Support returning to charge and resuming cleaning afterward.
 
 ## Build and Run Test Files
-    g++ -Iinclude /tests/unit/test_linkedlist.cpp -o tests/unit/test_ll
-    
-    ./test/unit/test_ll
-    
+    make test
+        
 ## Notes
 The README will be updated as implementation progresses.
 

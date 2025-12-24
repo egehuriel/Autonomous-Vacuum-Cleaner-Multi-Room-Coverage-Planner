@@ -33,6 +33,14 @@ public:
         return list.front();
     }
 
+    bool isEmpty(){
+        return list.isEmpty();
+    }
+
+    size_t size(){
+        return list.getSize();
+    }
+
 
 };
 
