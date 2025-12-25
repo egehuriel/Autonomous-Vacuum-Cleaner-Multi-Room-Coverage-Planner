@@ -2,7 +2,7 @@ CXX = g++
 CXXFLAGS = -std=c++17 -Iinclude -Wall -Wextra -Wpedantic
 
 TEST_SRCS = tests/test_main.cpp tests/unit/*.cpp
-TEST_BIN = tests_all
+TEST_BIN = build/data_tests_all
 
 .PHONY: test clean
 
