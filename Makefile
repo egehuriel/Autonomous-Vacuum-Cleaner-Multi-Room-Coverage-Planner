@@ -59,3 +59,9 @@ test_hashset:
 	@./$(TEST_BIN_HASHSET)
 	@echo
 	
+test_all:
+	@echo
+	@$(CXX) $(CXXFLAGS) $(TEST_SRCS) -o $(TEST_BIN)
+	@./$(TEST_BIN)
+	@echo
+	

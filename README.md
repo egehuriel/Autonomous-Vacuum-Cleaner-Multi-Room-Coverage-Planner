@@ -20,6 +20,8 @@ RUN TEST:
     
     make test
     
+    make test_all
+    
 RUN INDIVIDUAL TESTS:
 
     make test_linkedlist
