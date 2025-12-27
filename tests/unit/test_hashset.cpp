@@ -4,7 +4,7 @@
 
 using ds::HashSet;
 void test_hashset(){
-    std::cout << "[UNIT] HashSet\n";
+    std::cout << "test/unit/ [HASH-SET]" << std::endl;
 
     HashSet<int> setint(64);
     assert(setint.isEmpty());
@@ -22,5 +22,5 @@ void test_hashset(){
     assert(stringset.contains("a"));
     assert(stringset.contains("b"));
 
-    std::cout << "PASSED" << std::endl; 
+    std::cout << "-------PASSED-------" << std::endl; 
 }

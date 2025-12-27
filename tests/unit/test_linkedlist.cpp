@@ -5,7 +5,7 @@
 using ds::LinkedList;
 
 void test_linkedlist(){
-    std::cout << "test/unit/ LINKEDLIST" << std::endl;
+    std::cout << "test/unit/ [LINKEDLIST]" << std::endl;
     LinkedList<int> l;
 
     //check 
@@ -49,5 +49,5 @@ void test_linkedlist(){
     assert(m.getSize() == 2);
     assert(l.getSize() == 0);
 
-    std::cout << "PASSED" << std::endl;
+    std::cout << "-------PASSED-------" << std::endl;
 }

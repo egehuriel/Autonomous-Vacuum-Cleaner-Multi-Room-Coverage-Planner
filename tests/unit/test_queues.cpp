@@ -5,7 +5,7 @@
 using ds::Queue;
 
 void test_queues(){
-    std::cout << "test/unit/ QUEUES" << std::endl;
+    std::cout << "test/unit/ [QUEUES]" << std::endl;
     Queue<int> q;
     assert(q.isEmpty());
     q.enqueue(1);
@@ -18,5 +18,5 @@ void test_queues(){
     assert(q.dequeue() == 3);
     assert(q.isEmpty());
 
-    std::cout << "PASSED" << std::endl;
+    std::cout << "-------PASSED-------" << std::endl;
 }

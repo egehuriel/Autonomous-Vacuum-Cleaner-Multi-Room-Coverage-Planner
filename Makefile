@@ -7,8 +7,21 @@ TEST_BIN = build/data_tests_all
 .PHONY: test clean
 
 test:
-	$(CXX) $(CXXFLAGS) $(TEST_SRCS) -o $(TEST_BIN)
-	./$(TEST_BIN)
+	@echo
+	@$(CXX) $(CXXFLAGS) $(TEST_SRCS) -o $(TEST_BIN)
+	@./$(TEST_BIN)
+	@echo
 
+clear:
+	@echo
+	@rm -f $(TEST_BIN)
+	@echo "-----CLEARED-----"
+	@echo
+	
 clean:
-	rm -f $(TEST_BIN)
+	@echo
+	@rm -f $(TEST_BIN)
+	@echo "-----CLEANED-----"
+	@echo
+	
+

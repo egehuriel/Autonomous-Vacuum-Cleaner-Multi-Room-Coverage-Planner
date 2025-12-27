@@ -4,7 +4,7 @@
 
 using ds::Stack;
 void test_stack(){
-    std::cout << "[UNIT] Stack\n";
+    std::cout << "test/unit/ [STACK]" <<std::endl;
     Stack<int> s;
     assert(s.isEmpty());
     s.push(1);
@@ -17,7 +17,7 @@ void test_stack(){
     assert(s.pop() == 1);
     assert(s.isEmpty());
 
-    std::cout << "PASSED" << std::endl;
+    std::cout << "-------PASSED-------" << std::endl;
 }
 
 

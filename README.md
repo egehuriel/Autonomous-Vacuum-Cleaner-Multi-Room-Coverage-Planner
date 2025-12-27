@@ -16,7 +16,12 @@ The project focuses on data structures and algorithmic reasoning, rather than UI
 5. Support returning to charge and resuming cleaning afterward.
 
 ## Build and Run Test Files
+RUN TEST: 
     make test
+    
+CLEAR:
+    make clean
+    make clear
         
 ## Notes
 The README will be updated as implementation progresses.

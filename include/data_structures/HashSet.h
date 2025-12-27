@@ -122,7 +122,6 @@ public:
         for (Entry* cur = bucket->head; cur != nullptr; cur = cur->next) {
             if (keyEqual(cur->key, key)) return false;
         }
-
         Entry* entry = new Entry(std::move(key));
         entry->next = bucket->head;
         bucket->head = entry;
