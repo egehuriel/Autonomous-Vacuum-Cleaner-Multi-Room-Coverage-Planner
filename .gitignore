@@ -1,7 +1,0 @@
-.vscode/c_cpp_properties.json
-.vscode/settings.json
-include/.DS_Store
-include/data_structures/.DS_Store
-src/.DS_Store
-tests/.DS_Store
-.vscode/launch.json
