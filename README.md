@@ -20,6 +20,16 @@ RUN TEST:
     
     make test
     
+RUN INDIVIDUAL TESTS:
+
+    make test_linkedlist
+    
+    make test_queue
+    
+    make test_hashset
+    
+    make test_stack
+
 CLEAR:
     
     make clean
