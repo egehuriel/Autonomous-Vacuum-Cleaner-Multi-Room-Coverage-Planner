@@ -38,9 +38,47 @@ CLEAR:
     
     make clear
         
+## Project Structure
+    CSE211-TermProject/
+    ├── Makefile
+    ├── README.md
+    ├── build
+    │   ├── data_tests_all
+    │   ├── test_hashset
+    │   ├── test_linkedlist
+    │   ├── test_ll
+    │   ├── test_queues
+    │   └── test_stack
+    ├── include
+    │   └── data_structures
+    │       ├── HashSet.h
+    │       ├── LinkedList.h
+    │       ├── Queues.h
+    │       └── Stack.h
+    ├── src
+    │   └── data_structures
+    └── tests
+        ├── test_main.cpp
+        └── unit
+            ├── main
+            │   ├── test_main_hashset.cpp
+            │   ├── test_main_linkedlist.cpp
+            │   ├── test_main_queue.cpp
+            │   └── test_main_stack.cpp
+            ├── test_hashset.cpp
+            ├── test_linkedlist.cpp
+            ├── test_queues.cpp
+            └── test_stack.cpp
+    
+
 ## Notes
 The README will be updated as implementation progresses.
 
 ## Contributors
-CSE 211 Project 8 Group
+**CSE 211 Project 8 Group**
+- Ege Huriel
+- Pelin Görer
+- Emirhan Eren Elibol
+- Eylül Pirinçal
+- Selin Suna Kaya
 
