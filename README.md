@@ -17,10 +17,13 @@ The project focuses on data structures and algorithmic reasoning, rather than UI
 
 ## Build and Run Test Files
 RUN TEST: 
+    
     make test
     
 CLEAR:
+    
     make clean
+    
     make clear
         
 ## Notes
