@@ -31,6 +31,8 @@ RUN INDIVIDUAL TESTS:
     make test_hashset
     
     make test_stack
+    
+    make test_parser
 
 CLEAR:
     
@@ -43,18 +45,22 @@ CLEAR:
     ├── Makefile
     ├── README.md
     ├── build
-    │   ├── data_tests_all
-    │   ├── test_hashset
-    │   ├── test_linkedlist
-    │   ├── test_ll
-    │   ├── test_queues
-    │   └── test_stack
+    │   └── data_tests_all
+    ├── data
+    │   ├── invalid_grid.json
+    │   ├── obstacle_heavy.json
+    │   └── small_room.json
     ├── include
-    │   └── data_structures
-    │       ├── HashSet.h
-    │       ├── LinkedList.h
-    │       ├── Queues.h
-    │       └── Stack.h
+    │   ├── core
+    │   │   ├── GridModel.hpp
+    │   │   └── GridParser.hpp
+    │   ├── data_structures
+    │   │   ├── HashSet.h
+    │   │   ├── LinkedList.h
+    │   │   ├── Queues.h
+    │   │   └── Stack.h
+    │   └── libraries
+    │       └── json.hpp
     ├── src
     │   └── data_structures
     └── tests
@@ -63,14 +69,15 @@ CLEAR:
             ├── main
             │   ├── test_main_hashset.cpp
             │   ├── test_main_linkedlist.cpp
+            │   ├── test_main_parser.cpp
             │   ├── test_main_queue.cpp
             │   └── test_main_stack.cpp
             ├── test_hashset.cpp
             ├── test_linkedlist.cpp
+            ├── test_parser.cpp
             ├── test_queues.cpp
             └── test_stack.cpp
-    
-
+        
 ## Notes
 The README will be updated as implementation progresses.
 

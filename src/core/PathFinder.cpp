@@ -1,4 +1,4 @@
-#include "PathFinder.hpp"
+#include "core/PathFinder.hpp"
 #include "../include/data_structures/Queues.h"
 #include "../include/data_structures/HashSet.h"
 

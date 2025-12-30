@@ -1,8 +1,8 @@
 #pragma once
 
-#include "PathFinder.hpp"
+#include "core/PathFinder.hpp"
 
-enum BatteryState {
+enum class BatteryState {
     CLEANING,
     RETURNING,
     CHARGING

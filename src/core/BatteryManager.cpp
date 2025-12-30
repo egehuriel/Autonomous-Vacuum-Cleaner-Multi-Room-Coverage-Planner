@@ -1,7 +1,7 @@
-#include "BatteryManager.hpp"
+#include "core/BatteryManager.hpp"
 
 BatteryManager::BatteryManager(int cap, PathFinder& pf)
-    : capacity(cap), battery(cap), state(CLEANING), pathFinder(pf) {}
+    : battery(cap), capacity(cap), state(BatteryState::CLEANING), pathFinder(pf) {}
 
 void BatteryManager::consume(int amount) {
     battery = battery - amount;
@@ -11,14 +11,14 @@ void BatteryManager::consume(int amount) {
 
 bool BatteryManager::needsReturn(Position pos) {
     if (!pathFinder.canReachDock(pos, battery)) {
-        state = RETURNING;
+        state = BatteryState::RETURNING;
         return true;
     }
     return false;
 }
 void BatteryManager::recharge() {
     battery = capacity;
-    state = CLEANING;
+    state = BatteryState::CLEANING;
 }
 int BatteryManager::getBattery() const {
     return battery;

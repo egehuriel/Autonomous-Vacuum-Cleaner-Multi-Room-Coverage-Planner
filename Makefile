@@ -19,6 +19,14 @@ TEST_BIN_HASHSET = build/test_hashset
 TEST_PARSER = tests/unit/test_parser.cpp
 TEST_MAIN_PARSER = tests/unit/main/test_main_parser.cpp
 TEST_BIN_PARSER = build/test_parser
+CORE_SRC = src/core/*.cpp
+TEST_BAT = tests/unit/test_battery.cpp
+TEST_MAIN_BAT = tests/unit/main/test_main_battery.cpp
+TEST_BIN_BAT = build/test_battery
+TEST_PATH = tests/unit/test_pathfinder.cpp
+TEST_MAIN_PATH = tests/unit/main/test_main_pathfinder.cpp
+TEST_BIN_PATH = build/test_pathfinder
+
 .PHONY: test clean
 
 $(BIN_DIR):
@@ -26,7 +34,7 @@ $(BIN_DIR):
 
 test: $(BIN_DIR)
 	@echo
-	@$(CXX) $(CXXFLAGS) $(TEST_SRCS) -o $(TEST_BIN)
+	@$(CXX) $(CXXFLAGS) $(CORE_SRC) $(TEST_SRCS) -o $(TEST_BIN)
 	@./$(TEST_BIN)
 	@echo
 
@@ -70,7 +78,7 @@ test_hashset: $(BIN_DIR)
 	
 test_all: $(BIN_DIR)
 	@echo
-	@$(CXX) $(CXXFLAGS) $(TEST_SRCS) -o $(TEST_BIN)
+	@$(CXX) $(CXXFLAGS) $(CORE_SRC) $(TEST_SRCS) -o $(TEST_BIN)
 	@./$(TEST_BIN)
 	@echo
 	
@@ -78,4 +86,16 @@ test_parser: $(BIN_DIR)
 	@echo
 	@$(CXX) $(CXXFLAGS) $(TEST_MAIN_PARSER) $(TEST_PARSER) -o $(TEST_BIN_PARSER)
 	@./$(TEST_BIN_PARSER)
+	@echo
+
+test_battery: $(BIN_DIR)
+	@echo
+	@$(CXX) $(CXXFLAGS) $(CORE_SRC) $(TEST_MAIN_BAT) $(TEST_BAT) -o $(TEST_BIN_BAT)
+	@./$(TEST_BIN_BAT)
+	@echo
+	
+test_pathfinder: $(BIN_DIR)
+	@echo
+	@$(CXX) $(CXXFLAGS) $(CORE_SRC) $(TEST_MAIN_PATH) $(TEST_PATH) -o $(TEST_BIN_PATH)
+	@./$(TEST_BIN_PATH)
 	@echo
