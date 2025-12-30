@@ -17,7 +17,7 @@ void test_stack(){
     assert(s.pop() == 1);
     assert(s.isEmpty());
 
-    std::cout << "-------PASSED-------" << std::endl;
+    std::cout << "-------PASSED-------" << std::endl << std::endl;
 }
 
 

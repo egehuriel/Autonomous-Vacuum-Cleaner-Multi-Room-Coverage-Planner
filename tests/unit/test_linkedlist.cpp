@@ -49,5 +49,5 @@ void test_linkedlist(){
     assert(m.getSize() == 2);
     assert(l.getSize() == 0);
 
-    std::cout << "-------PASSED-------" << std::endl;
+    std::cout << "-------PASSED-------" << std::endl << std::endl;
 }

@@ -18,5 +18,5 @@ void test_queues(){
     assert(q.dequeue() == 3);
     assert(q.isEmpty());
 
-    std::cout << "-------PASSED-------" << std::endl;
+    std::cout << "-------PASSED-------" << std::endl << std::endl;
 }

@@ -22,5 +22,5 @@ void test_hashset(){
     assert(stringset.contains("a"));
     assert(stringset.contains("b"));
 
-    std::cout << "-------PASSED-------" << std::endl; 
+    std::cout << "-------PASSED-------" << std::endl << std::endl; 
 }

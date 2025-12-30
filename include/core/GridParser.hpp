@@ -5,7 +5,7 @@
 #include <iostream>
 #include <vector>
 #include <stdexcept> 
-#include "../nlohmann/json.hpp"
+#include "libraries/json.hpp"
 #include "GridModel.hpp"
 
 using json = nlohmann::json;
