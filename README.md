@@ -45,15 +45,24 @@ CLEAR:
     ├── Makefile
     ├── README.md
     ├── build
-    │   └── data_tests_all
+    │   ├── data_tests_all
+    │   ├── test_battery
+    │   ├── test_hashset
+    │   ├── test_ll
+    │   ├── test_parser
+    │   ├── test_pathfinder
+    │   ├── test_queues
+    │   └── test_stack
     ├── data
     │   ├── invalid_grid.json
     │   ├── obstacle_heavy.json
     │   └── small_room.json
     ├── include
     │   ├── core
+    │   │   ├── BatteryManager.hpp
     │   │   ├── GridModel.hpp
-    │   │   └── GridParser.hpp
+    │   │   ├── GridParser.hpp
+    │   │   └── PathFinder.hpp
     │   ├── data_structures
     │   │   ├── HashSet.h
     │   │   ├── LinkedList.h
@@ -62,21 +71,29 @@ CLEAR:
     │   └── libraries
     │       └── json.hpp
     ├── src
+    │   ├── core
+    │   │   ├── BatteryManager.cpp
+    │   │   └── PathFinder.cpp
     │   └── data_structures
     └── tests
         ├── test_main.cpp
         └── unit
             ├── main
+            │   ├── test_main_battery.cpp
             │   ├── test_main_hashset.cpp
             │   ├── test_main_linkedlist.cpp
             │   ├── test_main_parser.cpp
+            │   ├── test_main_pathfinder.cpp
             │   ├── test_main_queue.cpp
             │   └── test_main_stack.cpp
+            ├── test_battery.cpp
             ├── test_hashset.cpp
             ├── test_linkedlist.cpp
             ├── test_parser.cpp
+            ├── test_pathfinder.cpp
             ├── test_queues.cpp
             └── test_stack.cpp
+
         
 ## Notes
 The README will be updated as implementation progresses.
