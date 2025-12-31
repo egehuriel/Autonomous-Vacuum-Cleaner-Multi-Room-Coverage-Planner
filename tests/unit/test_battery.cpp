@@ -3,26 +3,30 @@
 #include "core/BatteryManager.hpp"
 #include "core/GridModel.hpp"
 #include "core/PathFinder.hpp"
+#include "../tests/unit/TestUtil.hpp"
 
 void test_battery(){
     std::cout << "test/unit/ [Battery Manager]" << std::endl;
-    GridModel gridmodel;
-    gridmodel.rows = 1;
-    gridmodel.cols = 3;
-    gridmodel.cells = {{ CellType::DOCK, CellType::CLEAN, CellType::CLEAN }};
-    gridmodel.dockPosition = {0, 0};
+    Test test;
+    GridModel grid;
+    grid.rows = 1;
+    grid.cols = 3;
+    grid.cells = {{ CellType::DOCK, CellType::CLEAN, CellType::CLEAN }};
+    grid.dockPosition = {0,0};
+    PathFinder pf(grid);
+    BatteryManager bm(10, pf);
+    test.check(bm.getBattery() == 10, "initial battery is cap");
+    test.check(bm.getState() == BatteryState::CLEANING, "initial state clean");
+    bm.consume(9);
+    test.check(bm.getBattery() == 1, "consume reduces battery");
+    bool mustReturn = bm.needsReturn({0,2});
+    test.check(mustReturn == true, "needs to return - true when cannot reach dock");
+    test.check(bm.getState() == BatteryState::RETURNING, "state becomes return when needs to return true");
 
-    PathFinder pathfinder(gridmodel);
-    BatteryManager batterymanager(10, pathfinder);
-    assert(batterymanager.getBattery() == 10);
-    assert(batterymanager.getState() == BatteryState::CLEANING);
-    batterymanager.consume(9);
-    assert(batterymanager.getBattery() == 1);
+    bm.recharge();
+    test.check(bm.getBattery() == 10, "recharge restores to cap");
+    test.check(bm.getState() == BatteryState::CLEANING, "state becomes clean after recharge");
 
-    bool robotreturn = batterymanager.needsReturn({0, 2});
-    assert(robotreturn == true);
-    assert(batterymanager.getState() == BatteryState::RETURNING);
-
-    std::cout << "-------PASSED-------" << std::endl << std::endl;
+    test.summary();
 
 }

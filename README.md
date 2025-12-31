@@ -33,6 +33,10 @@ RUN INDIVIDUAL TESTS:
     make test_stack
     
     make test_parser
+    
+    make test_battery
+    
+    make test_pathfinder
 
 CLEAR:
     
