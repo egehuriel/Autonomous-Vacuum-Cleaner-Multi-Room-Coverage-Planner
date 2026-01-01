@@ -26,6 +26,15 @@ TEST_BIN_BAT = build/test_battery
 TEST_PATH = tests/unit/test_pathfinder.cpp
 TEST_MAIN_PATH = tests/unit/main/test_main_pathfinder.cpp
 TEST_BIN_PATH = build/test_pathfinder
+TEST_COVERAGE = tests/unit/test_coverageplanner.cpp
+TEST_MAIN_COVERAGE = tests/unit/main/test_main_coverageplanner.cpp
+TEST_BIN_COVERAGE = build/test_coverageplanner
+TEST_RDEC = tests/unit/test_roomdecomposer.cpp
+TEST_MAIN_RDEC = tests/unit/main/test_main_roomdecomposer.cpp
+TEST_BIN_RDEC = build/test_roomdecomposer
+TEST_RSTR = tests/unit/test_roomstrategy.cpp
+TEST_MAIN_RSTR = tests/unit/main/test_main_roomstrategy.cpp
+TEST_BIN_RSTR = build/test_roomstrategy
 
 .PHONY: test clean
 
@@ -98,4 +107,22 @@ test_pathfinder: $(BIN_DIR)
 	@echo
 	@$(CXX) $(CXXFLAGS) $(CORE_SRC) $(TEST_MAIN_PATH) $(TEST_PATH) -o $(TEST_BIN_PATH)
 	@./$(TEST_BIN_PATH)
+	@echo
+	
+test_coverageplanner: $(BIN_DIR)
+	@echo
+	@$(CXX) $(CXXFLAGS) $(CORE_SRC) $(TEST_MAIN_COVERAGE) $(TEST_COVERAGE) -o $(TEST_BIN_COVERAGE)
+	@./$(TEST_BIN_COVERAGE)
+	@echo
+
+test_roomdecomposer: $(BIN_DIR)
+	@echo
+	@$(CXX) $(CXXFLAGS) $(CORE_SRC) $(TEST_MAIN_RDEC) $(TEST_RDEC) -o $(TEST_BIN_RDEC)
+	@./$(TEST_BIN_RDEC)
+	@echo
+
+test_roomstrategy: $(BIN_DIR)
+	@echo
+	@$(CXX) $(CXXFLAGS) $(CORE_SRC) $(TEST_MAIN_RSTR) $(TEST_RSTR) -o $(TEST_BIN_RSTR)
+	@./$(TEST_BIN_RSTR)
 	@echo

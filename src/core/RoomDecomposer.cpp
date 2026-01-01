@@ -1,4 +1,4 @@
-#include "RoomDecomposer.hpp"
+#include "core/RoomDecomposer.hpp"
 
 static const int DR[4] = {-1, 1, 0, 0};
 static const int DC[4] = {0, 0, -1, 1};

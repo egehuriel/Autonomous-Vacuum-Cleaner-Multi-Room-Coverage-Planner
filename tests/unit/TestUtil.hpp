@@ -20,14 +20,14 @@ struct Test {
         check(condition, testname);
     }
     void summary(){
-        std::cout << "RESULT : " << pass << " passed. " << fail << " failed." << std::endl << std::endl;
+        std::cout << "[RESULT] : " << pass << " passed. " << fail << " failed." << std::endl << std::endl;
     }
 };
 
-template<typename T>
-inline bool exceptionthrows(T&& x){
+template<typename FN>
+inline bool exceptionthrows(FN&& fn){
     try{
-        x();
+        fn();
     }catch(const std::runtime_error&){
         return true;
     }

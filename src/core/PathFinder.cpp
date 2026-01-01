@@ -1,6 +1,6 @@
 #include "core/PathFinder.hpp"
-#include "../include/data_structures/Queues.h"
-#include "../include/data_structures/HashSet.h"
+#include "data_structures/Queues.h"
+#include "data_structures/HashSet.h"
 
 
 PathFinder::PathFinder(GridModel& gridModel)
@@ -21,20 +21,20 @@ int PathFinder::distanceToDock(Position start) {
 
     while (!q.isEmpty()) {
         Position cur = q.dequeue();
-        int dx[4] = {-1, 1, 0, 0};
-        int dy[4] = {0, 0, -1, 1};
+        int dr[4] = {-1, 1, 0, 0};
+        int dc[4] = {0, 0, -1, 1};
 
-        if (cur.x == dock.x && cur.y == dock.y)
+        if (cur.r == dock.r && cur.c == dock.c)
             return dist;
 
         for (int k = 0; k < 4; k++) {
-            Position next{cur.x + dx[k], cur.y + dy[k]};
+            Position next{cur.r + dr[k], cur.c + dc[k]};
 
-            if (next.x < 0 || next.x >= grid.rows ||
-                next.y < 0 || next.y >= grid.cols)
+            if (next.r < 0 || next.r >= grid.rows ||
+                next.c < 0 || next.c >= grid.cols)
                 continue;
 
-            if (grid.cells[next.x][next.y] == CellType::WALL)
+            if (grid.cells[next.r][next.c] == CellType::WALL)
                 continue;
 
             if (visited.contains(next))

@@ -6,7 +6,7 @@
 #include <vector>
 #include <stdexcept> 
 #include "libraries/json.hpp"
-#include "GridModel.hpp"
+#include "core/GridModel.hpp"
 
 using json = nlohmann::json;
 
@@ -46,7 +46,7 @@ public:
                     model.cells[r][c] = CellType::WALL;
                 } else if (ch == 'D') {
                     model.cells[r][c] = CellType::DOCK;
-                    model.dockPosition = {c, r};
+                    model.dockPosition = Position(r,c);
                     dockCount++;
                 } else if (ch == 'C') {
                     model.cells[r][c] = CellType::DIRTY;

@@ -1,8 +1,8 @@
 #pragma once
-#include "Room.hpp"
-#include "GridModel.hpp"
-#include "../data_structures/LinkedList.h"
-#include "Position.hpp"
+#include "core/Room.hpp"
+#include "core/GridModel.hpp"
+#include "data_structures/LinkedList.h"
+#include "core/Position.hpp"
 
 class RoomStrategy {
 public:

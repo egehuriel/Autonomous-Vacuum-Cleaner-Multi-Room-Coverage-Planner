@@ -7,6 +7,9 @@ void test_hashset();
 void test_parser();
 void test_battery();
 void test_pathfinder();
+void test_coverageplanner();
+void test_roomdecomposer();
+void test_roomstrategy();
 
 int main(){
     try{
@@ -17,6 +20,9 @@ int main(){
         test_parser();
         test_battery();
         test_pathfinder();
+        test_coverageplanner();
+        test_roomdecomposer();
+        test_roomstrategy();
     }
     catch(const std::exception& e){
         std::cerr << "TEST FAIL: " << e.what() << std::endl;

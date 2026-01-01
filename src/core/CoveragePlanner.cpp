@@ -1,5 +1,5 @@
-#include "CoveragePlanner.hpp"
-#include "RoomDecomposer.hpp"
+#include "core/CoveragePlanner.hpp"
+#include "core/RoomDecomposer.hpp"
 
 static void clearStack(ds::Stack<Position>& st) {
     while (!st.isEmpty()) st.pop();
@@ -40,7 +40,7 @@ void CoveragePlanner::init(GridModel* g, ds::LinkedList<Room>* rms, RoomDecompos
 
 void CoveragePlanner::setRoomOrder(const ds::LinkedList<int>& order) {
     roomOrder.clear();
-    for (int i = 0; i < order.size(); i++){
+    for (int i = 0; i < (int)order.size(); i++){
         roomOrder.pushBack(order.getAt(i));
     }
     roomOrderIndex = 0;
@@ -62,11 +62,11 @@ bool CoveragePlanner::allFloorsCleaned() const {
 }
 
 bool CoveragePlanner::roomHasUncleaned(int roomId) const {
-    for (int i = 0; i < rooms->size(); i++) {
+    for (int i = 0; i < (int)rooms->size(); i++) {
         Room rm = rooms->getAt(i);
         if (rm.id != roomId) continue;
 
-        int m = rm.floorCells.size();
+        int m = (int)rm.floorCells.size();
         for (int k = 0; k < m; k++) {
             Position p = rm.floorCells.getAt(k);
             if (!grid->isCleaned(p.r, p.c)) return true;
@@ -76,12 +76,12 @@ bool CoveragePlanner::roomHasUncleaned(int roomId) const {
     return false;
 }
 
-void CoveragePlanner::buildSweepTargetsForRoom(int roomId, LinkedList<Position>& outTargets) const {
+void CoveragePlanner::buildSweepTargetsForRoom(int roomId, ds::LinkedList<Position>& outTargets) const {
     outTargets.clear();
 
     Room rm;
     bool found = false;
-    for (int i = 0; i < rooms->size(); i++) {
+    for (int i = 0; i < (int)rooms->size(); i++) {
         Room tmp = rooms->getAt(i);
         if (tmp.id == roomId) { rm = tmp; found = true; break; }
     }
@@ -117,13 +117,13 @@ bool CoveragePlanner::pickNearestUncleaned(Position& outTarget) const {
 }
 
 bool CoveragePlanner::pickNextTarget(Position& outTarget) {
-    while (roomOrderIndex < roomOrder.size()) {
+    while (roomOrderIndex < (int)roomOrder.size()) {
         int rid = roomOrder.getAt(roomOrderIndex);
         if (roomHasUncleaned(rid)) {
             ds::LinkedList<Position> sweep;
             buildSweepTargetsForRoom(rid, sweep);
 
-            for (int i = 0; i < sweep.size(); i++) {
+            for (int i = 0; i < (int)sweep.size(); i++) {
                 Position p = sweep.getAt(i);
                 if (!grid->isCleaned(p.r, p.c)) {
                     outTarget = p;

@@ -4,9 +4,9 @@ struct Position {
     int r;
     int c;
 
-    Position(int r = 0, int c = 0) : r(r), c(c) {}
-
-    bool operator==(const Position& other) const {
-        return r == other.r && c == other.c;
-    }
+    explicit Position(int r_ = 0, int c_ = 0) : r(r_), c(c_) {}
 };
+
+inline bool operator==(const Position& a, const Position& b) {
+    return a.r == b.r && a.c == b.c;
+}

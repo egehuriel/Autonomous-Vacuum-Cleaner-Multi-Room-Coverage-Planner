@@ -1,9 +1,10 @@
 #pragma once
-#include "GridModel.hpp"
-#include "Room.hpp"
-#include "Position.hpp"
-#include "../data_structures/LinkedList.h"
-#include "../data_structures/Stack.h"
+#include "core/GridModel.hpp"
+#include "core/Room.hpp"
+#include "core/Position.hpp"
+#include "data_structures/LinkedList.h"
+#include "data_structures/Stack.h"
+#include "core/RoomDecomposer.hpp"
 
 class CoveragePlanner {
 public:
@@ -27,14 +28,14 @@ public:
     bool allFloorsCleaned() const;
 
 private:
-    GridModel* grid;
+    GridModel* grid;    
     ds::LinkedList<Room>* rooms;
     RoomDecomposer* decomposer;
     Hooks hooks;
-
+    
     int stuckCounter;
-
-    ds::LinkedList<int> roomOrder;
+    int lastCleanedTotal;
+    ds::LinkedList<int> roomOrder;   
     int roomOrderIndex;
 
     int countCleanedTotal() const;
@@ -46,7 +47,7 @@ private:
     void buildSweepTargetsForRoom(int roomId, ds::LinkedList<Position>& outTargets) const;
 
     bool pickNearestUncleaned(Position& outTarget) const;
-    public:
+public:
     void setRoomOrder(const ds::LinkedList<int>& order);
 
 };

@@ -1,6 +1,6 @@
 #pragma once
-#include "GridModel.hpp"
-#include "Room.hpp"
+#include "core/GridModel.hpp"
+#include "core/Room.hpp"
 
 #include "../data_structures/Queues.h"
 #include "../data_structures/LinkedList.h"
