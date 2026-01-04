@@ -56,12 +56,12 @@ void test_coverageplanner(){
     planner.init(&gridmodel, nullptr, nullptr, hooks);
     ds::Stack<Position> outpath;
     bool ok = planner.planNextPath(Position(0,0), 100, outpath);
-    test.check(ok == true, "plannextpath true when dirty cell and battery ok");
+    test.check(ok == true, "plan path true when dirty cell and battery ok");
     test.check(outpath.isEmpty() == false, "outpath is not empty");
     requestedreturn = false;
     ds::Stack<Position> outpath2;
     bool ok2 = planner.planNextPath(Position(0,0), 0, outpath2);
-    test.check(ok2 == false, "plannextpath returns false battery not ok");
+    test.check(ok2 == false, "plan path returns false battery not ok");
     gridmodel.cells = {{ CellType::DOCK, CellType::CLEAN, CellType::CLEAN }};
     test.check(requestedreturn == true, "hooks called when battery low");
 
