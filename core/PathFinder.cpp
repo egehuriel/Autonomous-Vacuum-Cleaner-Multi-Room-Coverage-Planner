@@ -13,19 +13,22 @@ int PathFinder::distanceToDock(Position start) {
     ds::Queue<Position> q;
     ds::HashSet<Position, PositionHash> visited;
 
-
     q.enqueue(start);
     visited.insert(start);
 
-    int dist = 0;
+    std::vector<std::vector<int>> dist(grid.rows,
+        std::vector<int>(grid.cols, -1));
+
+    dist[start.x][start.y] = 0;
 
     while (!q.isEmpty()) {
         Position cur = q.dequeue();
-        int dx[4] = {-1, 1, 0, 0};
-        int dy[4] = {0, 0, -1, 1};
 
         if (cur.x == dock.x && cur.y == dock.y)
-            return dist;
+            return dist[cur.x][cur.y];
+
+        int dx[4] = {-1, 1, 0, 0};
+        int dy[4] = {0, 0, -1, 1};
 
         for (int k = 0; k < 4; k++) {
             Position next{cur.x + dx[k], cur.y + dy[k]};
@@ -41,10 +44,9 @@ int PathFinder::distanceToDock(Position start) {
                 continue;
 
             visited.insert(next);
+            dist[next.x][next.y] = dist[cur.x][cur.y] + 1;
             q.enqueue(next);
         }
-
-        dist++;
     }
 
     return -1;

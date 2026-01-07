@@ -24,47 +24,79 @@ public:
         file >> data;
 
         model.initialBattery = data.value("battery", 100);
-        std::vector<std::string> gridStr = data["grid"];
-        
-        if (gridStr.empty()) throw std::runtime_error("Grid bos olamaz!");
+        json gridJson = data["grid"];
 
-        model.rows = gridStr.size();
-        model.cols = gridStr[0].size();
+        if (!gridJson.is_array() || gridJson.empty()) {
+            throw std::runtime_error("Grid bos ya da gecersiz!");
+        }
+
+       
+
         int dockCount = 0;
 
-        model.cells.resize(model.rows, std::vector<CellType>(model.cols));
+        if (gridJson[0].is_string()) {
+    
+            std::vector<std::string> gridStr = gridJson;
 
-        for (int r = 0; r < model.rows; ++r) {
-            
-            if (gridStr[r].size() != (size_t)model.cols) {
-                throw std::runtime_error("Hata: Grid dikdortgen degil!");
+            model.rows = gridStr.size();
+            model.cols = gridStr[0].size();
+
+            model.cells.resize(model.rows, std::vector<CellType>(model.cols));
+
+            for (int r = 0; r < model.rows; ++r) {
+                if (gridStr[r].size() != (size_t)model.cols) {
+                    throw std::runtime_error("Grid is not a rectangle");
+                }
+
+                for (int c = 0; c < model.cols; ++c) {
+                    char ch = gridStr[r][c];
+
+                    if (ch == 'W') model.cells[r][c] = CellType::WALL;
+                    else if (ch == 'C') model.cells[r][c] = CellType::DIRTY;
+                    else if (ch == 'S') model.cells[r][c] = CellType::CLEAN;
+                    else if (ch == 'D') {
+                        model.cells[r][c] = CellType::DOCK;
+                        model.dockPosition = {r, c};
+                        dockCount++;
+                    } else {
+                        throw std::runtime_error("invalid character");
+                    }
+                }
             }
+        }
+        else {
+            model.rows = gridJson.size();
+            model.cols = gridJson[0].size();
 
-            for (int c = 0; c < model.cols; ++c) {
-                char ch = gridStr[r][c];
-                if (ch == 'W') {
-                    model.cells[r][c] = CellType::WALL;
-                } else if (ch == 'D') {
-                    model.cells[r][c] = CellType::DOCK;
-                    model.dockPosition = {c, r};
-                    dockCount++;
-                } else if (ch == 'C') {
-                    model.cells[r][c] = CellType::DIRTY;
-                } else if (ch == 'S') { 
-                    model.cells[r][c] = CellType::CLEAN;
-                } else {
-                    
-                    throw std::runtime_error("Hata: Gecersiz karakter: " + std::string(1, ch));
+            model.cells.resize(model.rows, std::vector<CellType>(model.cols));
+
+            for (int r = 0; r < model.rows; ++r) {
+                if ((int)gridJson[r].size() != model.cols) {
+                    throw std::runtime_error("Grid is not a rectangle");
+                }
+
+                for (int c = 0; c < model.cols; ++c) {
+                    std::string cell = gridJson[r][c];
+
+                    if (cell == "W") model.cells[r][c] = CellType::WALL;
+                    else if (cell == "C") model.cells[r][c] = CellType::DIRTY;
+                    else if (cell == "S") model.cells[r][c] = CellType::CLEAN;
+                    else if (cell == "D") {
+                        model.cells[r][c] = CellType::DOCK;
+                        model.dockPosition = {r, c};
+                        dockCount++;
+                    } else {
+                        throw std::runtime_error("invalid position");
+                    }
                 }
             }
         }
 
-        
         if (dockCount != 1) {
-            throw std::runtime_error("Hata: Haritada tam olarak 1 adet Dock (D) olmalidir!");
-        }
+        throw std::runtime_error("There should be exactly 1 Dock");
+    }
 
-        return model;
+    return model;
     }
 };
 
