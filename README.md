@@ -31,6 +31,18 @@ RUN INDIVIDUAL TESTS:
     make test_hashset
     
     make test_stack
+    
+    make test_parser
+    
+    make test_battery
+    
+    make test_pathfinder
+    
+    make test_coverageplanner
+    
+    make test_roomdecomposer
+    
+    make test_roomstrategy
 
 CLEAR:
     
@@ -44,33 +56,72 @@ CLEAR:
     ├── README.md
     ├── build
     │   ├── data_tests_all
+    │   ├── test_battery
+    │   ├── test_coverageplanner
     │   ├── test_hashset
-    │   ├── test_linkedlist
     │   ├── test_ll
+    │   ├── test_parser
+    │   ├── test_pathfinder
     │   ├── test_queues
+    │   ├── test_roomdecomposer
+    │   ├── test_roomstrategy
     │   └── test_stack
+    ├── data
+    │   ├── invalid_grid.json
+    │   ├── obstacle_heavy.json
+    │   └── small_room.json
     ├── include
-    │   └── data_structures
-    │       ├── HashSet.h
-    │       ├── LinkedList.h
-    │       ├── Queues.h
-    │       └── Stack.h
+    │   ├── core
+    │   │   ├── BatteryManager.hpp
+    │   │   ├── CoveragePlanner.hpp
+    │   │   ├── GridModel.hpp
+    │   │   ├── GridParser.hpp
+    │   │   ├── PathFinder.hpp
+    │   │   ├── Position.hpp
+    │   │   ├── Room.hpp
+    │   │   ├── RoomDecomposer.hpp
+    │   │   └── RoomStrategy.hpp
+    │   ├── data_structures
+    │   │   ├── HashSet.h
+    │   │   ├── LinkedList.h
+    │   │   ├── Queues.h
+    │   │   └── Stack.h
+    │   └── libraries
+    │       └── json.hpp
     ├── src
+    │   ├── core
+    │   │   ├── BatteryManager.cpp
+    │   │   ├── CoveragePlanner.cpp
+    │   │   ├── PathFinder.cpp
+    │   │   ├── RoomDecomposer.cpp
+    │   │   └── RoomStrategy.cpp
     │   └── data_structures
     └── tests
         ├── test_main.cpp
         └── unit
+            ├── TestUtil.hpp
             ├── main
+            │   ├── test_main_battery.cpp
+            │   ├── test_main_coverageplanner.cpp
             │   ├── test_main_hashset.cpp
             │   ├── test_main_linkedlist.cpp
+            │   ├── test_main_parser.cpp
+            │   ├── test_main_pathfinder.cpp
             │   ├── test_main_queue.cpp
+            │   ├── test_main_roomdecomposer.cpp
+            │   ├── test_main_roomstrategy.cpp
             │   └── test_main_stack.cpp
+            ├── test_battery.cpp
+            ├── test_coverageplanner.cpp
             ├── test_hashset.cpp
             ├── test_linkedlist.cpp
+            ├── test_parser.cpp
+            ├── test_pathfinder.cpp
             ├── test_queues.cpp
+            ├── test_roomdecomposer.cpp
+            ├── test_roomstrategy.cpp
             └── test_stack.cpp
-    
-
+        
 ## Notes
 The README will be updated as implementation progresses.
 

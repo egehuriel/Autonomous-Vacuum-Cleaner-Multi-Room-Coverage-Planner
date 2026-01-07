@@ -11,11 +11,12 @@ int PathFinder::distanceToDock(Position start) {
     ds::Queue<Position> q;
     ds::HashSet<Position, PositionHash> visited;
 
-    std::vector<std::vector<int>> dist(
-        grid.rows, std::vector<int>(grid.cols, -1));
-
     q.enqueue(start);
     visited.insert(start);
+
+    std::vector<std::vector<int>> dist(
+        grid.rows, std::vector<int>(grid.cols, -1)
+    );
     dist[start.x][start.y] = 0;
 
     while (!q.isEmpty()) {
@@ -53,4 +54,3 @@ bool PathFinder::canReachDock(Position start, int battery) {
     int dist = distanceToDock(start);
     return dist != -1 && battery >= dist;
 }
-

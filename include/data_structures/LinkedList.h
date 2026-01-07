@@ -17,9 +17,9 @@ private:
 	};
 	Node* head;
 	Node* tail;
-	std::size_t size;
+	std::size_t size_m;
 	Node* nodeAt(std::size_t index) {
-		if(index >= size){
+		if(index >= size_m){
 			std::cerr << "out of range" << std::endl;
 		}
 		Node* cur = head;
@@ -29,18 +29,18 @@ private:
 		return cur;
 	}
 public:
-	LinkedList() : head(nullptr), tail(nullptr), size(0) {}
+	LinkedList() : head(nullptr), tail(nullptr), size_m(0) {}
 	~LinkedList(){
 		clear();
 	}
-	LinkedList(LinkedList& other) : head(nullptr), tail(nullptr), size(0) {
+	LinkedList(const LinkedList& other) : head(nullptr), tail(nullptr), size_m(0) {
 		Node* cur = other.head;
 		while(cur){
 			pushBack(cur->data);
 			cur = cur->next;
 		}
 	}
-	LinkedList& operator=(LinkedList& other){
+	LinkedList& operator=(const LinkedList& other){
 		if(this == &other){
 			return *this;
 		}
@@ -52,10 +52,10 @@ public:
 		}
 		return *this;
 	}
-	LinkedList(LinkedList&& other) : head(other.head), tail(other.tail), size(other.size){
+	LinkedList(LinkedList&& other) : head(other.head), tail(other.tail), size_m(other.size_m){
 		other.head = nullptr;
 		other.tail = nullptr;
-		other.size = 0;
+		other.size_m = 0;
 	}
 	LinkedList& operator=(LinkedList&& other)  {
 		if(this == &other){
@@ -64,10 +64,10 @@ public:
 		clear();
 		head = other.head;
 		tail = other.tail;
-		size = other.size;
+		size_m = other.size_m;
 		other.head = nullptr;
 		other.tail = nullptr;
-		other.size = 0;
+		other.size_m = 0;
 		return *this;
 	}
 
@@ -82,7 +82,7 @@ public:
 		}
 		head = nullptr;
 		tail = nullptr;
-		size = 0;
+		size_m = 0;
 	}
 
 	void pushFront(const T& value){
@@ -92,7 +92,7 @@ public:
 		if(tail == nullptr){
 			tail = head;
 		}
-		++size;
+		++size_m;
 	}
 
 	void pushFront(T&& value){
@@ -102,7 +102,7 @@ public:
 		if(tail == nullptr){
 			tail = head;
 		}
-		++size;
+		++size_m;
 	}
 	void pushBack(const T& value){
 		Node* newNode = new Node(value);
@@ -115,7 +115,7 @@ public:
 			tail -> next = newNode;
 			tail = newNode;
 		}
-		++size;
+		++size_m;
 	}
 	void pushBack(T&& value){
 		Node* newNode = new Node(std::move(value));
@@ -128,19 +128,19 @@ public:
 			tail -> next = newNode;
 			tail = newNode;
 		}
-		++size;
+		++size_m;
 	}
 	
 	T popFront(){
-		if(size == 0){
+		if(size_m == 0){
 			std::cerr << "empty" << std::endl;
 		}
 		Node* old = head;
 		T out = std::move(old -> data);
 		head = head -> next;
 		delete old;
-		--size;
-		if(size ==0){
+		--size_m;
+		if(size_m ==0){
 			tail = nullptr; head = nullptr;
 		}
 		return out;
@@ -164,8 +164,8 @@ public:
 					tail = prev;
 				}
 				delete cur;
-				--size;
-				if(size == 0){
+				--size_m;
+				if(size_m == 0){
 					head = nullptr; tail = nullptr;
 				}
 				return true;
@@ -185,28 +185,53 @@ public:
 			cur = cur -> next;
 			++findindex;
 		}
-		return size;
+		return size_m;
 	}
 
 	T& front(){
-		if(size == 0){
+		if(size_m == 0){
 			std::cerr << "empty" << std::endl;
 		}
 		return head -> data;
 	}
 	T& back(){
-		if(size == 0){
+		if(size_m == 0){
 			std::cerr << "empty" << std::endl;
 		}
 		return tail -> data;
 	}
 
 	size_t getSize() const {
-		return size;
+		return size_m;
 	}
+	std::size_t size() const{
+		return this->size_m;
+	}
+	T& getAt(std::size_t index){
+		if(index >= size_m){
+			throw std::out_of_range("get at");
+		}
+			Node* cur = head;
+			for(std::size_t i = 0; i < index; ++i){
+				cur = cur -> next;
+			}
+			return cur -> data;
+		}
+
+	T& getAt(std::size_t index) const{
+		if(index >= size_m){
+			throw std::out_of_range("get at");
+		}
+			Node* cur = head;
+			for(std::size_t i = 0; i < index; ++i){
+				cur = cur -> next;
+			}
+			return cur -> data;
+	}
+	
 
 	bool isEmpty() const {
-		return size == 0;
+		return size_m == 0;
 	}
 
 };
