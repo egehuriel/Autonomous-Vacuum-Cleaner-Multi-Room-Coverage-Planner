@@ -2,6 +2,8 @@
 
 #include "PathFinder.hpp"
 
+#include "Position.hpp"
+
 
 enum class BatteryState {
     CLEANING,

@@ -1,6 +1,5 @@
 #include "PathFinder.hpp"
-#include "../include/data_structures/Queues.h"
-#include "../include/data_structures/HashSet.h"
+
 
 PathFinder::PathFinder(GridModel& gridModel)
     : grid(gridModel) {
