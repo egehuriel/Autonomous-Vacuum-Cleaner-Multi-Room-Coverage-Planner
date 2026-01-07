@@ -1,10 +1,10 @@
 {
   "battery": 150,
   "grid": [
-    "WWWWWW",
-    "WCCCCW",
-    "WCWWCW",
-    "WCDCCW",
-    "WWWWWW"
+    ["W","W","W","W","W","W"],
+    ["W","C","C","C","C","W"],
+    ["W","C","W","W","C","W"],
+    ["W","C","D","C","C","W"],
+    ["W","W","W","W","W","W"]
   ]
 }
