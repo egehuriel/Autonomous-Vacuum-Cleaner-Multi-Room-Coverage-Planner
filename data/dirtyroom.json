@@ -1,0 +1,17 @@
+{
+  "legend": {
+    "W": "wall",
+    "F": "floor",
+    "O": "obstacle",
+    "D": "door",
+    "C": "charging_dock"
+  },
+  "vacuum": {
+    "battery_capacity": 100,
+    "start_position": [0, 5]
+  },
+  "grid": [
+    ["W","W","W","F","F","C","F","F","F","F","F","F","F","F","F","W"],
+    ["F","F","W","W","F","F","W","W","F","F","F","F","F","F","F","F"]
+  ]
+}
