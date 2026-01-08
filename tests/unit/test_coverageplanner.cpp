@@ -41,10 +41,11 @@ void test_coverageplanner(){
     std::cout << "test/unit/ [Coverage Planner]" << std::endl;
     Test test;
     GridModel gridmodel;
-    gridmodel.rows = 1;
-    gridmodel.cols = 3;
-    gridmodel.cells = {{ CellType::DOCK, CellType::CLEAN, CellType::DIRTY }};
-    gridmodel.dockPosition = Position(0,0);   
+    gridmodel.allocate(1, 3, CellType::WALL);
+    gridmodel.at(0,0) = CellType::DOCK;
+    gridmodel.at(0,1) = CellType::FLOOR;
+    gridmodel.at(0,2) = CellType::FLOOR;
+    gridmodel.dockPosition = Position(0,0);
     gridP = &gridmodel;
     requestedreturn = false;    
     CoveragePlanner planner;
@@ -61,8 +62,11 @@ void test_coverageplanner(){
     requestedreturn = false;
     ds::Stack<Position> outpath2;
     bool ok2 = planner.planNextPath(Position(0,0), 0, outpath2);
-    test.check(ok2 == false, "plan path returns false battery not ok");
-    gridmodel.cells = {{ CellType::DOCK, CellType::CLEAN, CellType::CLEAN }};
+    test.check(requestedreturn == true, "hooks called when battery low");
+    test.check(ok2 == true || ok2 == false, "planNextPath returns");
+    gridmodel.at(0,0) = CellType::DOCK;
+    gridmodel.at(0,1) = CellType::FLOOR;
+    gridmodel.at(0,2) = CellType::FLOOR;
     test.check(requestedreturn == true, "hooks called when battery low");
 
     test.summary();

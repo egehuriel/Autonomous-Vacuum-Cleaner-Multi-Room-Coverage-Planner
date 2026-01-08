@@ -2,8 +2,8 @@
 #include "core/GridModel.hpp"
 #include "core/Room.hpp"
 
-#include "../data_structures/Queues.h"
-#include "../data_structures/LinkedList.h"
+#include "data_structures/Queues.h"
+#include "data_structures/LinkedList.h"
 
 class RoomDecomposer {
 private:

@@ -28,21 +28,21 @@ char TUI::cellTypeToChar(const GridModel& grid, int r, int c) const {
         return '?';
     }
     
-    CellType type = grid.cells[r][c];
+    CellType type = grid.at(r, c);
     
     switch (type) {
         case CellType::WALL:
             return 'W';
-        case CellType::DIRTY:
-            return 'F';  // Floor (uncleaned)
-        case CellType::CLEAN:
-            return 'F';  // Floor (uncleaned, pre-marked as clean but not cleaned yet)
-        case CellType::DOCK:
-            return 'C';  // Charging dock
+        case CellType::FLOOR:
+            return 'F';
+        case CellType::OBSTACLE:
+            return 'O';
         case CellType::DOOR:
-            return 'D';  // Doorway
+            return 'D';
+        case CellType::DOCK:
+            return 'C';
         case CellType::CLEANED:
-            return '.';  // Cleaned floor
+            return '.';
         default:
             return '?';
     }

@@ -35,6 +35,11 @@ TEST_BIN_RDEC = build/test_roomdecomposer
 TEST_RSTR = tests/unit/test_roomstrategy.cpp
 TEST_MAIN_RSTR = tests/unit/main/test_main_roomstrategy.cpp
 TEST_BIN_RSTR = build/test_roomstrategy
+DATA_DIR = data
+RUN_INPUTS = $(DATA_DIR)/small_room.json $(DATA_DIR)/dirtyroom.json $(DATA_DIR)/obstacle_heavy.json $(DATA_DIR)/invalid_grid.json
+RUN_BIN = build/run
+FRONTEND_SRC = src/frontend/TUI.cpp src/frontend/main.cpp
+APP_SRC = src/frontend/main.cpp
 
 .PHONY: test clean
 
@@ -126,3 +131,51 @@ test_roomstrategy: $(BIN_DIR)
 	@$(CXX) $(CXXFLAGS) $(CORE_SRC) $(TEST_MAIN_RSTR) $(TEST_RSTR) -o $(TEST_BIN_RSTR)
 	@./$(TEST_BIN_RSTR)
 	@echo
+	
+run_smallroom: $(BIN_DIR)
+	@echo
+	@$(CXX) $(CXXFLAGS) $(CORE_SRC) $(FRONTEND_SRC) -o $(RUN_BIN)
+	@./$(RUN_BIN) data/small_room.json
+	@echo
+	
+run_obstacleheavy: $(BIN_DIR)
+	@echo
+	@$(CXX) $(CXXFLAGS) $(CORE_SRC) $(FRONTEND_SRC) -o $(RUN_BIN)
+	@./$(RUN_BIN) data/obstacle_heavy.json
+	@echo
+
+run_invalid: $(BIN_DIR)
+	@echo
+	@$(CXX) $(CXXFLAGS) $(CORE_SRC) $(FRONTEND_SRC) -o $(RUN_BIN)
+	@./$(RUN_BIN) data/invalid_grid.json
+	@echo
+	
+run_dirtyroom: $(BIN_DIR)
+	@echo
+	@$(CXX) $(CXXFLAGS) $(CORE_SRC) $(FRONTEND_SRC) -o $(RUN_BIN)
+	@./$(RUN_BIN) data/dirty_room.json
+	@echo
+	
+run_input: $(BIN_DIR)
+	@echo
+	@$(CXX) $(CXXFLAGS) $(CORE_SRC) $(FRONTEND_SRC) -o $(RUN_BIN)
+	@./$(RUN_BIN) data/input_sample.json
+	@echo
+	
+run: $(BIN_DIR)
+	@echo
+	@$(CXX) $(CXXFLAGS) $(CORE_SRC) $(FRONTEND_SRC) -o $(RUN_BIN)
+	@bash -c '\
+		files=( $(RUN_INPUTS) ); \
+		for i in "$${!files[@]}"; do \
+			echo "$$((i+1))) $${files[$$i]}"; \
+		done; \
+		echo -n "Choose input: "; \
+		read n; \
+		if ! [[ "$$n" =~ ^[0-9]+$$ ]]; then echo "error"; exit 1; fi; \
+		idx=$$((n-1)); \
+		if [ $$idx -lt 0 ] || [ $$idx -ge $${#files[@]} ]; then echo "error"; exit 1; fi; \
+		file="$${files[$$idx]}"; \
+		echo "Running: $$file"; \
+		./$(RUN_BIN) "$$file" \
+	'

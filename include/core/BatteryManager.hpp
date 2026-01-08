@@ -16,10 +16,11 @@ private:
     int battery;
     int capacity;
     BatteryState state;
+    int safetyMargin;
     PathFinder& pathFinder;
 
 public:
-    BatteryManager(int cap, PathFinder& pf);
+    BatteryManager(int cap, PathFinder& pf, int margin = 0);
 
     void consume(int amount);
     bool needsReturn(Position pos);

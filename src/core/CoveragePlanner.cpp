@@ -1,26 +1,48 @@
 #include "core/CoveragePlanner.hpp"
 #include "core/RoomDecomposer.hpp"
+#include <utility>
 
 static void clearStack(ds::Stack<Position>& st) {
     while (!st.isEmpty()) st.pop();
 }
 
+static int stackLen(ds::Stack<Position>& st){
+    int len = 0;
+    ds::Stack<Position> temp1;
+    ds::Stack<Position> temp2;
+    while(!st.isEmpty()){
+        Position p = st.pop();
+        len++;
+        temp1.push(std::move(p));
+    }
+    while(!temp1.isEmpty()){
+        temp2.push(temp1.pop());
+    }
+    while(!temp2.isEmpty()){
+        st.push(temp2.pop());
+    }
+    return len;
+}
+
 static void copyStack(ds::Stack<Position>& dst, ds::Stack<Position>& src) {
-    ds::Stack<Position> tmp;
+    ds::Stack<Position> tmp1;
+    ds::Stack<Position> tmp2;
     clearStack(dst);
 
     while (!src.isEmpty()) {
         Position x = src.pop();
-        tmp.push(std::move(x));
+        tmp1.push(std::move(x));
     }
 
-    while (!tmp.isEmpty()) {
-        Position x = tmp.pop();
+    while (!tmp1.isEmpty()) {
+        tmp2.push(tmp1.pop());
+    }
+    while(!tmp2.isEmpty()){
+        Position x = tmp2.pop();
         src.push(Position(x.r, x.c));
         dst.push(std::move(x));
     }
 }
-
 
 CoveragePlanner::CoveragePlanner()
     : grid(nullptr), rooms(nullptr), decomposer(nullptr),
@@ -148,21 +170,28 @@ bool CoveragePlanner::planNextPath(const Position& currentPos, int battery, ds::
 
     ds::Stack<Position> path;
     bool ok = hooks.buildPath(currentPos, target, path);
-    if (!ok || path.size() == 0) {
+    int lennodes = stackLen(path);
+    if (!ok || lennodes == 0) {
         if (hooks.requestReturnToDock) hooks.requestReturnToDock();
+        if(hooks.buildPath && grid){
+            bool okdock = hooks.buildPath(currentPos, grid -> dockPosition, outPath);
+            return okdock;
+        }
         return false;
     }
 
-    int pathLen = (int)path.size() - 1;
+    int pathLen = lennodes - 1;
     int back = hooks.distToDock(target);
     int margin = hooks.safetyMargin;
 
-    if (pathLen + back + margin > battery) {
-        if (hooks.requestReturnToDock) hooks.requestReturnToDock();
-        return false;
+    if(back < 0 || pathLen + back + margin > battery){
+        if(hooks.requestReturnToDock){
+            hooks.requestReturnToDock();
+        }
+        bool okdock = hooks.buildPath(currentPos, grid -> dockPosition, outPath);
+        return okdock;
     }
 
     copyStack(outPath, path);
     return true;
 }
-

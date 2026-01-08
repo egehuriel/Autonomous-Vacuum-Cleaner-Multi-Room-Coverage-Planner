@@ -1,55 +1,56 @@
-#include "PathFinder.hpp"
+#include "core/PathFinder.hpp"
+#include "data_structures/Queues.h"
+#include <cstring>
 
-
-PathFinder::PathFinder(GridModel& gridModel)
-    : grid(gridModel) {
-    dock = grid.dockPosition;
-}
+PathFinder::PathFinder(GridModel& gridModel) : grid(gridModel), dock(gridModel.dockPosition) {}
 
 int PathFinder::distanceToDock(Position start) {
-    ds::Queue<Position> q;
-    ds::HashSet<Position, PositionHash> visited;
-
-    q.enqueue(start);
-    visited.insert(start);
-
-    std::vector<std::vector<int>> dist(
-        grid.rows, std::vector<int>(grid.cols, -1)
-    );
-    dist[start.x][start.y] = 0;
-
+    if (start == dock) return 0;
+    int rows = grid.R();
+    int cols = grid.C();
+    int totalCells = rows * cols;
+    bool* visited = new bool[totalCells];
+    for(int i = 0; i < totalCells; i++) {
+        visited[i] = false;
+    }
+    struct Node {
+        Position pos;
+        int dist;
+    };
+    ds::Queue<Node> q;
+    q.enqueue({start, 0});
+    int startIndex = start.r * cols + start.c;
+    visited[startIndex] = true;
+    int resultDist = -1;
+    int dr[] = {-1, 1, 0, 0};
+    int dc[] = {0, 0, -1, 1};
     while (!q.isEmpty()) {
-        Position cur = q.dequeue();
-
-        if (cur.x == dock.x && cur.y == dock.y)
-            return dist[cur.x][cur.y];
-
-        int dx[4] = {-1, 1, 0, 0};
-        int dy[4] = {0, 0, -1, 1};
-
-        for (int k = 0; k < 4; k++) {
-            Position next{cur.x + dx[k], cur.y + dy[k]};
-
-            if (next.x < 0 || next.x >= grid.rows ||
-                next.y < 0 || next.y >= grid.cols)
-                continue;
-
-            if (grid.cells[next.x][next.y] == CellType::WALL)
-                continue;
-
-            if (visited.contains(next))
-                continue;
-
-            visited.insert(next);
-            dist[next.x][next.y] = dist[cur.x][cur.y] + 1;
-            q.enqueue(next);
+        Node current = q.front();
+        q.dequeue();
+        if (current.pos == dock) {
+            resultDist = current.dist;
+            break;
+        }
+        for (int i = 0; i < 4; i++) {
+            int nr = current.pos.r + dr[i];
+            int nc = current.pos.c + dc[i];
+            if (grid.inBounds(nr, nc)) {
+                if (grid.isTraversable(nr, nc) || (nr == dock.r && nc == dock.c)) {
+                    int index = nr * cols + nc;
+                    if (!visited[index]) {
+                        visited[index] = true;
+                        q.enqueue({Position(nr, nc), current.dist + 1});
+                    }
+                }
+            }
         }
     }
-
-    return -1;
+    delete[] visited;
+    return resultDist;
 }
 
 bool PathFinder::canReachDock(Position start, int battery) {
     int dist = distanceToDock(start);
-    return dist != -1 && battery >= dist;
+    if (dist == -1) return false;
+    return battery >= dist;
 }

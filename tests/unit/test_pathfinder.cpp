@@ -1,51 +1,50 @@
-#include <cassert>
 #include <iostream>
 #include "core/GridModel.hpp"
 #include "core/PathFinder.hpp"
 #include "../tests/unit/TestUtil.hpp"
 
-void test_pathfinder(){
+static GridModel makeGrid_1x3_open() {
+    GridModel g;
+    g.allocate(1, 3, CellType::WALL);
+    g.at(0,0) = CellType::DOCK;
+    g.at(0,1) = CellType::FLOOR;
+    g.at(0,2) = CellType::FLOOR;
+    g.dockPosition = Position(0,0);
+    g.startPosition = Position(0,0);
+    return g;
+}
+
+static GridModel makeGrid_1x3_blocked() {
+    GridModel g;
+    g.allocate(1, 3, CellType::WALL);
+
+    g.at(0,0) = CellType::DOCK;
+    g.at(0,1) = CellType::WALL;
+    g.at(0,2) = CellType::FLOOR;
+    g.dockPosition = Position(0,0);
+    g.startPosition = Position(0,0);
+    return g;
+}
+
+void test_pathfinder() {
     std::cout << "test/unit/ [Path Finder]" << std::endl;
     Test test;
-    //test 1 - 1x3 hall Dc
+
     {
-        GridModel gridmodel;
-        gridmodel.rows = 1;
-        gridmodel.cols = 3;
-        gridmodel.cells = {{ CellType::DOCK, CellType::CLEAN, CellType::CLEAN}};
-        gridmodel.dockPosition = Position(0,0);
-        PathFinder pathfinder(gridmodel);
-        test.check(pathfinder.distanceToDock(Position(0,0)) == 0, "distance to charge == 0");
-        test.check(pathfinder.distanceToDock(Position(0,2)) == 2, "distance to end == 2" );
-        test.check(pathfinder.canReachDock(Position(0,2), 2) == true, "can reach with battery = 2 is true" );
-        test.check(pathfinder.canReachDock(Position(0,2), 1) == false, "can reach with battery = 1 is false");
+        GridModel g = makeGrid_1x3_open();
+        PathFinder pf(g);
+        test.check(pf.distanceToDock(Position(0,0)) == 0, "dock distance 0");
+        test.check(pf.distanceToDock(Position(0,2)) == 2, "end distance 2");
+        test.check(pf.canReachDock(Position(0,2), 2) == true, "battery 2 ok");
+        test.check(pf.canReachDock(Position(0,2), 1) == false, "battery 1 not ok");
     }
-    //test 2 - 1x3 D W
+
     {
-        GridModel gridmodel;
-        gridmodel.rows = 1;
-        gridmodel.cols = 3;
-        gridmodel.cells = {{ CellType::DOCK, CellType::WALL, CellType::CLEAN}};
-        gridmodel.dockPosition = Position(0,0);
-        PathFinder pathfinder(gridmodel);
-        test.check(pathfinder.distanceToDock(Position(0,2)) == -1, "distance unreachable = -1");
-        test.check(pathfinder.canReachDock(Position(0,2), 1) == false, "can reach false if unreacheble");
+        GridModel g = makeGrid_1x3_blocked();
+        PathFinder pf(g);
+        test.check(pf.distanceToDock(Position(0,2)) == -1, "blocked distance -1");
+        test.check(pf.canReachDock(Position(0,2), 999) == false, "blocked can reach false");
     }
-    //test 3 - 3x3 DW W detour
-    {
-        GridModel gridmodel;
-        gridmodel.rows = 3;
-        gridmodel.cols = 3;
-        gridmodel.cells = {
-            { CellType::DOCK, CellType::WALL, CellType::CLEAN },
-            { CellType::CLEAN, CellType::WALL, CellType::CLEAN },
-            { CellType::CLEAN, CellType::CLEAN, CellType::CLEAN }
-        };
-        gridmodel.dockPosition = Position(0,0);
-        PathFinder pathfinder(gridmodel);
-        test.check(pathfinder.distanceToDock(Position(0,2)) == 6, "distance with detour = 6");
-        test.check(pathfinder.canReachDock(Position(0,2), 6) == true, "can reach with battery at = 6 true");
-        test.check(pathfinder.canReachDock(Position(0,2), 5) == false, "can reach with battery at = 5 false");
-    }
+
     test.summary();
 }

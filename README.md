@@ -15,7 +15,11 @@ The project focuses on data structures and algorithmic reasoning, rather than UI
 4. Enforce battery constraints and safe return to the charging dock.
 5. Support returning to charge and resuming cleaning afterward.
 
-## Build and Run Test Files
+## Run Project
+    
+    make run
+
+## Test Projects / Files
 RUN TEST: 
     
     make test
@@ -43,6 +47,16 @@ RUN INDIVIDUAL TESTS:
     make test_roomdecomposer
     
     make test_roomstrategy
+    
+    make run_smallroom
+    
+    make run_obstacleheavy
+    
+    make run_dirtyroom
+    
+    make run_input
+    
+    make run_invalid (#For test purposes)
 
 CLEAR:
     
@@ -52,10 +66,12 @@ CLEAR:
         
 ## Project Structure
     CSE211-TermProject/
+    ├── LICENSE
     ├── Makefile
     ├── README.md
     ├── build
     │   ├── data_tests_all
+    │   ├── run
     │   ├── test_battery
     │   ├── test_coverageplanner
     │   ├── test_hashset
@@ -67,6 +83,8 @@ CLEAR:
     │   ├── test_roomstrategy
     │   └── test_stack
     ├── data
+    │   ├── dirtyroom.json
+    │   ├── input_sample.json
     │   ├── invalid_grid.json
     │   ├── obstacle_heavy.json
     │   └── small_room.json
@@ -86,6 +104,9 @@ CLEAR:
     │   │   ├── LinkedList.h
     │   │   ├── Queues.h
     │   │   └── Stack.h
+    │   ├── frontend
+    │   │   ├── DisplayMode.hpp
+    │   │   └── TUI.hpp
     │   └── libraries
     │       └── json.hpp
     ├── src
@@ -95,7 +116,10 @@ CLEAR:
     │   │   ├── PathFinder.cpp
     │   │   ├── RoomDecomposer.cpp
     │   │   └── RoomStrategy.cpp
-    │   └── data_structures
+    │   ├── data_structures
+    │   └── frontend
+    │       ├── TUI.cpp
+    │       └── main.cpp
     └── tests
         ├── test_main.cpp
         └── unit
@@ -132,4 +156,3 @@ The README will be updated as implementation progresses.
 - Emirhan Eren Elibol
 - Eylül Pirinçal
 - Selin Suna Kaya
-

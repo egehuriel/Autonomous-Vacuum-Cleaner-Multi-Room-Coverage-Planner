@@ -1,10 +1,19 @@
 {
-  "battery": 150,
+  "legend": {
+    "W": "wall",
+    "F": "floor",
+    "O": "obstacle",
+    "D": "door",
+    "C": "charging_dock"
+  },
+  "vacuum": {
+    "battery_capacity": 100,
+    "start_position": [1, 2]
+  },
   "grid": [
     ["W","W","W","W","W","W"],
-    ["W","C","C","C","C","W"],
-    ["W","C","W","W","C","W"],
-    ["W","C","D","C","C","W"],
-    ["W","W","W","W","W","W"]
+    ["W","F","C","O","F","W"],
+    ["W","F","W","W","F","W"],
+    ["W","F","D","F","O","W"]
   ]
 }

@@ -1,4 +1,5 @@
 #include "core/RoomDecomposer.hpp"
+#include "data_structures/Queues.h"
 
 static const int DR[4] = {-1, 1, 0, 0};
 static const int DC[4] = {0, 0, -1, 1};
@@ -43,7 +44,9 @@ void RoomDecomposer::floodFillRoom(GridModel& grid, int startR, int startC, int 
         if (grid.isFloor(u.r, u.c)) {
             outRoom.floorCells.pushBack(u);
             outRoom.uncleanedCount++;
-
+            if(!grid.isCleaned(u.r, u.c)){
+                outRoom.uncleanedCount++;
+            }
             if (u.r < outRoom.rmin) outRoom.rmin = u.r;
             if (u.r > outRoom.rmax) outRoom.rmax = u.r;
             if (u.c < outRoom.cmin) outRoom.cmin = u.c;
