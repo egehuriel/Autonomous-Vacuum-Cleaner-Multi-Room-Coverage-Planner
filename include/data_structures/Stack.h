@@ -32,5 +32,9 @@ public:
             }
             return list.front();
         }
+
+        void push(const T& value){
+            list.pushBack(value);
+        }
     };
 }

@@ -5,13 +5,12 @@
 #include "data_structures/LinkedList.h"
 #include "data_structures/Stack.h"
 #include "core/RoomDecomposer.hpp"
-#include <functional>
 
 class CoveragePlanner {
 public:
-    using BuildPathFunc = std::function<bool(const Position&, const Position&, ds::Stack<Position>&)>;
-    using DistToDockFunc = std::function<int(const Position&)>;
-    using RequestReturnDockFunc = std::function<void()>;
+    typedef bool (*BuildPathFunc)(const Position& from, const Position& to, ds::Stack<Position>& outPath);
+    typedef int  (*DistToDockFunc)(const Position& pos);
+    typedef void (*RequestReturnDockFunc)();
 
     struct Hooks {
         BuildPathFunc buildPath = nullptr;
@@ -19,25 +18,36 @@ public:
         RequestReturnDockFunc requestReturnToDock = nullptr;
         int safetyMargin = 2;
     };
+
     CoveragePlanner();
+
     void init(GridModel* g, ds::LinkedList<Room>* rms, RoomDecomposer* dec, const Hooks& hooks);
+
     bool planNextPath(const Position& currentPos, int battery, ds::Stack<Position>& outPath);
+
     bool allFloorsCleaned() const;
-    int countCleanedTotal() const;
-    void setRoomOrder(const ds::LinkedList<int>& order);
 
 private:
     GridModel* grid;    
     ds::LinkedList<Room>* rooms;
     RoomDecomposer* decomposer;
     Hooks hooks;
+    
     int stuckCounter;
     int lastCleanedTotal;
     ds::LinkedList<int> roomOrder;   
     int roomOrderIndex;
+
+    int countCleanedTotal() const;
     int findCurrentRoomId(const Position& p) const;
     bool roomHasUncleaned(int roomId) const;
+
     bool pickNextTarget(Position& outTarget);
+
     void buildSweepTargetsForRoom(int roomId, ds::LinkedList<Position>& outTargets) const;
+
     bool pickNearestUncleaned(Position& outTarget) const;
+public:
+    void setRoomOrder(const ds::LinkedList<int>& order);
+
 };
