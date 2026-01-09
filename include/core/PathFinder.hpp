@@ -2,6 +2,7 @@
 
 #include "core/GridModel.hpp"
 #include "data_structures/Queues.h"
+#include "data_structures/Stack.h"
 #include "data_structures/HashSet.h"
 
 struct PositionHash {
@@ -19,4 +20,6 @@ public:
     PathFinder(GridModel& gridModel);
     int distanceToDock(Position start);
     bool canReachDock(Position start, int battery);
+    int computeMaxDistanceFromDock();
+    bool getPathToDock(Position start, ds::Stack<Position>& outPath);
 };

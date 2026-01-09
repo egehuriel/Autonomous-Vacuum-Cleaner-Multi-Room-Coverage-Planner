@@ -15,6 +15,18 @@ The project focuses on data structures and algorithmic reasoning, rather than UI
 4. Enforce battery constraints and safe return to the charging dock.
 5. Support returning to charge and resuming cleaning afterward.
 
+## Design Limitations
+
+### Battery Management and Return-to-Dock Behavior
+
+The current implementation successfully handles core coverage path planning functionality, including grid-based navigation, obstacle avoidance, multi-room decomposition, and complete floor cell coverage using BFS/DFS-based traversal algorithms. The system correctly tracks cleaned and uncleaned cells and generates efficient coverage paths through the environment.
+
+However, the system includes a deliberate design limitation regarding automatic return-to-dock behavior when battery levels become critically low. Specifically, the `CoveragePlanner` component includes battery-aware path planning logic that evaluates whether sufficient battery remains to reach a target location and return to the charging dock. This planning phase correctly identifies scenarios where battery constraints would be violated and can request a return-to-dock operation through the provided hook mechanism.
+
+The limitation occurs in the execution phase: while the planner can detect low battery conditions and generate return paths during path planning, the main execution loop does not implement proactive battery monitoring during path traversal. When battery depletion occurs during movement (reaching zero or below a critical threshold), the system halts execution at the current position rather than immediately executing a pre-computed return path to the charging dock.
+
+This behavior is an intentional design decision for the current version of the system, focusing the implementation scope on coverage path planning algorithms and data structure correctness rather than real-time battery management during execution. The navigation, coverage, and obstacle handling components function correctly within this design framework.
+
 ## Run Project
     
     make run

@@ -113,6 +113,14 @@ int main(int argc, char** argv) {
         PathFinder pf(grid);
         BatteryManager bm(grid.initialBattery, pf, 2);
 
+        // Compute max distance from dock to all reachable cells
+        int maxDistanceFromDock = pf.computeMaxDistanceFromDock();
+        // Compute safety threshold with 7.5% buffer (between 5-10%)
+        int safetyThreshold = maxDistanceFromDock + (maxDistanceFromDock * 8 / 100);
+        if (safetyThreshold < maxDistanceFromDock + 1) {
+            safetyThreshold = maxDistanceFromDock + 1;
+        }
+
         RoomDecomposer decomposer;
         ds::LinkedList<Room> rooms;
         decomposer.assignRooms(grid, rooms);
@@ -140,28 +148,63 @@ int main(int argc, char** argv) {
         Position pos = grid.startPosition;
         int totalSteps = 0;
         int totalBatteryUsed = 0;
+        bool returnToDockMode = false;
 
         if (grid.isFloor(pos.r, pos.c) && !grid.isCleaned(pos.r, pos.c)) {
             grid.markCleaned(pos.r, pos.c);
         }
 
-        while (!planner.allFloorsCleaned()) {
-            if (pos == grid.dockPosition) {
+        while (true) {
+            // Check if we've reached the dock in return-to-dock mode
+            if (returnToDockMode && pos == grid.dockPosition) {
+                // Terminate execution when dock is reached
+                break;
+            }
+
+            if (pos == grid.dockPosition && !returnToDockMode) {
                 bm.recharge();
                 g_returnRequested = false;
+                returnToDockMode = false;
             }
 
             ui.render(grid, pos, bm.getBattery());
             ui.waitForNext();
 
+            // Check battery before each movement cycle
+            int currentBattery = bm.getBattery();
+            int distanceToDock = pf.distanceToDock(pos);
+            
+            // If battery is insufficient to return to dock, switch to return-to-dock mode
+            if (!returnToDockMode && distanceToDock >= 0 && currentBattery <= distanceToDock + safetyThreshold) {
+                returnToDockMode = true;
+            }
+
             ds::Stack<Position> path;
             bool ok = false;
 
-            if (g_returnRequested && !(pos == grid.dockPosition)) {
+            if (returnToDockMode) {
+                // Get shortest path to dock
+                ok = pf.getPathToDock(pos, path);
+            } else if (g_returnRequested && !(pos == grid.dockPosition)) {
                 ok = buildPathHook(pos, grid.dockPosition, path);
+                if (ok) {
+                    returnToDockMode = true;
+                }
             } else {
-                ok = planner.planNextPath(pos, bm.getBattery(), path);
+                // Check if all floors are cleaned
+                if (planner.allFloorsCleaned()) {
+                    // All cleaned, return to dock
+                    ok = pf.getPathToDock(pos, path);
+                    if (ok) {
+                        returnToDockMode = true;
+                    } else {
+                        break;
+                    }
+                } else {
+                    ok = planner.planNextPath(pos, bm.getBattery(), path);
+                }
             }
+
             Position vacuumPos = pos;
             int battery = bm.getBattery();
             Position target = vacuumPos;
@@ -187,7 +230,7 @@ int main(int argc, char** argv) {
                 }
             }    
 
-            std::cout << "[DBG] pos=(" << vacuumPos.r << "," << vacuumPos.c << ") battery=" << battery << " target=(" << target.r << "," << target.c << ")" << " pathLen=" << pathLen << " cleanedHere=" << grid.isCleaned(vacuumPos.r, vacuumPos.c) << std::endl;
+            std::cout << "[DBG] pos=(" << vacuumPos.r << "," << vacuumPos.c << ") battery=" << battery << " target=(" << target.r << "," << target.c << ")" << " pathLen=" << pathLen << " cleanedHere=" << grid.isCleaned(vacuumPos.r, vacuumPos.c) << " returnToDock=" << (returnToDockMode ? "true" : "false") << std::endl;
 
             if (!ok) break;
             if (path.isEmpty()) break;
@@ -196,8 +239,34 @@ int main(int argc, char** argv) {
             (void)first;
 
             while (!path.isEmpty()) {
-                if (bm.getBattery() <= 0) {
-                    g_returnRequested = true;
+                // Check battery before each movement
+                currentBattery = bm.getBattery();
+                distanceToDock = pf.distanceToDock(pos);
+                
+                // If battery is insufficient, switch to return-to-dock mode immediately
+                if (!returnToDockMode && distanceToDock >= 0 && currentBattery <= distanceToDock + safetyThreshold) {
+                    returnToDockMode = true;
+                    // Get path to dock and replace current path
+                    ds::Stack<Position> dockPath;
+                    if (pf.getPathToDock(pos, dockPath)) {
+                        // Clear current path
+                        while (!path.isEmpty()) path.pop();
+                        // Copy dock path to current path (maintaining order: start on top, dock on bottom)
+                        ds::Stack<Position> tmp;
+                        while (!dockPath.isEmpty()) {
+                            Position p = dockPath.pop();
+                            tmp.push(p);
+                        }
+                        while (!tmp.isEmpty()) {
+                            path.push(tmp.pop());
+                        }
+                    } else {
+                        break;
+                    }
+                }
+
+                if (currentBattery <= 0) {
+                    // Battery depleted, stop
                     break;
                 }
 
@@ -212,6 +281,16 @@ int main(int argc, char** argv) {
 
                 ui.render(grid, pos, bm.getBattery());
                 ui.waitForNext();
+
+                // If we reached dock in return-to-dock mode, terminate
+                if (returnToDockMode && pos == grid.dockPosition) {
+                    break;
+                }
+            }
+
+            // If we reached dock in return-to-dock mode, exit main loop
+            if (returnToDockMode && pos == grid.dockPosition) {
+                break;
             }
         }
 
