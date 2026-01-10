@@ -175,7 +175,10 @@ int main(int argc, char** argv) {
             int distanceToDock = pf.distanceToDock(pos);
             
             // If battery is insufficient to return to dock, switch to return-to-dock mode
-            if (!returnToDockMode && distanceToDock >= 0 && currentBattery <= distanceToDock + safetyThreshold) {
+            // But only if we're not already at the dock (avoid immediate loop)
+            // Use strict comparison: battery must be less than (not equal to) distance + threshold
+            // to avoid triggering when battery is exactly at threshold (which is safe)
+            if (!returnToDockMode && distanceToDock > 0 && currentBattery < distanceToDock + safetyThreshold) {
                 returnToDockMode = true;
             }
 
@@ -183,7 +186,11 @@ int main(int argc, char** argv) {
             bool ok = false;
 
             if (returnToDockMode) {
-                // Get shortest path to dock
+                // Get shortest path to dock, but skip if already at dock
+                if (pos == grid.dockPosition) {
+                    // Already at dock in return mode - we're done
+                    break;
+                }
                 ok = pf.getPathToDock(pos, path);
             } else if (g_returnRequested && !(pos == grid.dockPosition)) {
                 ok = buildPathHook(pos, grid.dockPosition, path);
@@ -193,6 +200,10 @@ int main(int argc, char** argv) {
             } else {
                 // Check if all floors are cleaned
                 if (planner.allFloorsCleaned()) {
+                    // All cleaned - if already at dock, we're done
+                    if (pos == grid.dockPosition) {
+                        break;
+                    }
                     // All cleaned, return to dock
                     ok = pf.getPathToDock(pos, path);
                     if (ok) {
@@ -244,7 +255,8 @@ int main(int argc, char** argv) {
                 distanceToDock = pf.distanceToDock(pos);
                 
                 // If battery is insufficient, switch to return-to-dock mode immediately
-                if (!returnToDockMode && distanceToDock >= 0 && currentBattery <= distanceToDock + safetyThreshold) {
+                // Use strict comparison and skip if already at dock to avoid loops
+                if (!returnToDockMode && distanceToDock > 0 && currentBattery < distanceToDock + safetyThreshold) {
                     returnToDockMode = true;
                     // Get path to dock and replace current path
                     ds::Stack<Position> dockPath;
