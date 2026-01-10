@@ -36,7 +36,7 @@ TEST_RSTR = tests/unit/test_roomstrategy.cpp
 TEST_MAIN_RSTR = tests/unit/main/test_main_roomstrategy.cpp
 TEST_BIN_RSTR = build/test_roomstrategy
 DATA_DIR = data
-RUN_INPUTS = $(DATA_DIR)/small_room.json $(DATA_DIR)/dirtyroom.json $(DATA_DIR)/obstacle_heavy.json $(DATA_DIR)/invalid_grid.json
+RUN_INPUTS = $(DATA_DIR)/small_room.json $(DATA_DIR)/dirtyroom.json $(DATA_DIR)/obstacle_heavy.json $(DATA_DIR)/invalid_grid.json $(DATA_DIR)/input_sample.json
 RUN_BIN = build/run
 FRONTEND_SRC = src/frontend/TUI.cpp src/frontend/main.cpp
 APP_SRC = src/frontend/main.cpp
@@ -167,6 +167,9 @@ run: $(BIN_DIR)
 	@$(CXX) $(CXXFLAGS) $(CORE_SRC) $(FRONTEND_SRC) -o $(RUN_BIN)
 	@bash -c '\
 		files=( $(RUN_INPUTS) ); \
+		if [ $${#files[@]} -eq 0 ]; then \
+			echo "error"; exit 1; \
+		fi; \
 		for i in "$${!files[@]}"; do \
 			echo "$$((i+1))) $${files[$$i]}"; \
 		done; \
@@ -177,5 +180,6 @@ run: $(BIN_DIR)
 		if [ $$idx -lt 0 ] || [ $$idx -ge $${#files[@]} ]; then echo "error"; exit 1; fi; \
 		file="$${files[$$idx]}"; \
 		echo "Running: $$file"; \
-		./$(RUN_BIN) "$$file" \
+		./$(RUN_BIN) "$$file"; \
 	'
+	@echo
