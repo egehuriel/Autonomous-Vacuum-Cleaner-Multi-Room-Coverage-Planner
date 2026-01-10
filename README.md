@@ -83,23 +83,15 @@ CLEAR:
     ├── README.md
     ├── build
     │   ├── data_tests_all
-    │   ├── run
-    │   ├── test_battery
-    │   ├── test_coverageplanner
-    │   ├── test_hashset
-    │   ├── test_ll
-    │   ├── test_parser
-    │   ├── test_pathfinder
-    │   ├── test_queues
-    │   ├── test_roomdecomposer
-    │   ├── test_roomstrategy
-    │   └── test_stack
+    │   └── run
     ├── data
     │   ├── dirtyroom.json
     │   ├── input_sample.json
     │   ├── invalid_grid.json
     │   ├── obstacle_heavy.json
     │   └── small_room.json
+    ├── docs
+    │   └── Project Report.pdf
     ├── include
     │   ├── core
     │   │   ├── BatteryManager.hpp
