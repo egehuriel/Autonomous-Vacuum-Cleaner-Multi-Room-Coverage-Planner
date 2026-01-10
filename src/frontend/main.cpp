@@ -155,12 +155,19 @@ int main(int argc, char** argv) {
         }
 
         while (true) {
-            // Progress guard: Save state at start of iteration to detect no-progress iterations
+            // FORMAL PROGRESS GUARANTEE: Track if real movement occurred this iteration
+            // Progress = position changes OR path size decreases due to consuming a step
+            // Battery decrease WITHOUT movement does NOT count as progress
+            bool progressed = false;
             Position prevPos = pos;
-            int prevBattery = bm.getBattery();
-            // Check if we've reached the dock in return-to-dock mode
+            
+            // STRICT TERMINATION RULE 1: All floors cleaned AND at dock → terminate immediately
+            if (planner.allFloorsCleaned() && pos == grid.dockPosition) {
+                break;
+            }
+            
+            // STRICT TERMINATION RULE 2: Return-to-dock mode AND already at dock → terminate
             if (returnToDockMode && pos == grid.dockPosition) {
-                // Terminate execution when dock is reached
                 break;
             }
 
@@ -168,8 +175,7 @@ int main(int argc, char** argv) {
                 bm.recharge();
                 g_returnRequested = false;
                 returnToDockMode = false;
-                // Critical: If all floors are cleaned and we're at dock, terminate immediately
-                // This prevents deadlock where path generation might create empty/invalid paths
+                // After recharge, check termination again (all floors might be cleaned now)
                 if (planner.allFloorsCleaned()) {
                     break;
                 }
@@ -194,9 +200,8 @@ int main(int argc, char** argv) {
             bool ok = false;
 
             if (returnToDockMode) {
-                // Get shortest path to dock, but skip if already at dock
+                // STRICT TERMINATION RULE 2 (redundant check, already handled above but kept for safety)
                 if (pos == grid.dockPosition) {
-                    // Already at dock in return mode - we're done
                     break;
                 }
                 ok = pf.getPathToDock(pos, path);
@@ -208,7 +213,7 @@ int main(int argc, char** argv) {
             } else {
                 // Check if all floors are cleaned
                 if (planner.allFloorsCleaned()) {
-                    // All cleaned - if already at dock, we're done
+                    // All cleaned - if already at dock, terminate (already checked above, but kept for safety)
                     if (pos == grid.dockPosition) {
                         break;
                     }
@@ -217,6 +222,7 @@ int main(int argc, char** argv) {
                     if (ok) {
                         returnToDockMode = true;
                     } else {
+                        // Cannot reach dock - terminate
                         break;
                     }
                 } else {
@@ -251,23 +257,30 @@ int main(int argc, char** argv) {
 
             std::cout << "[DBG] pos=(" << vacuumPos.r << "," << vacuumPos.c << ") battery=" << battery << " target=(" << target.r << "," << target.c << ")" << " pathLen=" << pathLen << " cleanedHere=" << grid.isCleaned(vacuumPos.r, vacuumPos.c) << " returnToDock=" << (returnToDockMode ? "true" : "false") << std::endl;
 
-            if (!ok) break;
-            if (path.isEmpty()) break;
-
-            Position first = path.pop();
-            // Critical deadlock prevention: After popping first element, if path is now empty,
-            // no movement will occur in the inner loop, causing infinite loop. Exit immediately.
+            // STRICT TERMINATION RULE 3: Path generation failed or produced empty path
+            if (!ok) {
+                break;
+            }
             if (path.isEmpty()) {
                 break;
             }
 
+            // Pop first element (current position) - path should contain movement steps
+            Position first = path.pop();
+            // STRICT TERMINATION RULE 4: Generated path has no movement steps
+            if (path.isEmpty()) {
+                // Path contained only current position - no movement possible
+                break;
+            }
+
+            // Process path and execute movements
+            bool shouldTerminate = false;
             while (!path.isEmpty()) {
                 // Check battery before each movement
                 currentBattery = bm.getBattery();
                 distanceToDock = pf.distanceToDock(pos);
                 
                 // If battery is insufficient, switch to return-to-dock mode immediately
-                // Use strict comparison and skip if already at dock to avoid loops
                 if (!returnToDockMode && distanceToDock > 0 && currentBattery < distanceToDock + safetyThreshold) {
                     returnToDockMode = true;
                     // Get path to dock and replace current path
@@ -285,19 +298,25 @@ int main(int argc, char** argv) {
                             path.push(tmp.pop());
                         }
                     } else {
+                        // Cannot reach dock - terminate outer loop
+                        shouldTerminate = true;
                         break;
                     }
                 }
 
                 if (currentBattery <= 0) {
-                    // Battery depleted, stop
+                    // Battery depleted - terminate outer loop
+                    shouldTerminate = true;
                     break;
                 }
 
-                pos = path.pop();
+                // EXECUTE MOVEMENT: This is the ONLY place where real progress occurs
+                Position newPos = path.pop();
+                pos = newPos;
                 bm.consume(1);
                 totalSteps++;
                 totalBatteryUsed++;
+                progressed = true;  // Mark progress: position changed
 
                 if (grid.isFloor(pos.r, pos.c) && !grid.isCleaned(pos.r, pos.c)) {
                     grid.markCleaned(pos.r, pos.c);
@@ -306,27 +325,23 @@ int main(int argc, char** argv) {
                 ui.render(grid, pos, bm.getBattery());
                 ui.waitForNext();
 
-                // If we reached dock in return-to-dock mode, terminate
+                // STRICT TERMINATION RULE 2: Reached dock in return-to-dock mode
                 if (returnToDockMode && pos == grid.dockPosition) {
+                    shouldTerminate = true;
                     break;
                 }
             }
 
-            // If we reached dock in return-to-dock mode, exit main loop
-            if (returnToDockMode && pos == grid.dockPosition) {
+            // Handle termination conditions from inner loop
+            if (shouldTerminate) {
                 break;
             }
 
-            // Progress guard: Check if any progress was made this iteration
-            // Progress is defined as: position changed OR battery changed
-            // Note: If we broke early above, we don't reach here - those breaks are valid exits
-            bool positionChanged = !(pos == prevPos);
-            bool batteryChanged = (bm.getBattery() != prevBattery);
-
-            // If no progress was made in any dimension, we're in a deadlock - exit gracefully
-            if (!positionChanged && !batteryChanged) {
-                // No progress: position and battery both unchanged after full iteration
-                // This indicates a logical deadlock - terminate to avoid infinite loop
+            // FORMAL PROGRESS GUARANTEE: If no progress was made, terminate immediately
+            // Progress = position changed (tracked by progressed flag)
+            // Battery decrease without movement does NOT count as progress
+            if (!progressed) {
+                // No movement occurred this iteration - deadlock detected, terminate
                 break;
             }
         }
