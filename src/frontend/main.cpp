@@ -165,6 +165,11 @@ int main(int argc, char** argv) {
                 bm.recharge();
                 g_returnRequested = false;
                 returnToDockMode = false;
+                // Critical: If all floors are cleaned and we're at dock, terminate immediately
+                // This prevents deadlock where path generation might create empty/invalid paths
+                if (planner.allFloorsCleaned()) {
+                    break;
+                }
             }
 
             ui.render(grid, pos, bm.getBattery());
@@ -247,7 +252,11 @@ int main(int argc, char** argv) {
             if (path.isEmpty()) break;
 
             Position first = path.pop();
-            (void)first;
+            // Critical deadlock prevention: After popping first element, if path is now empty,
+            // no movement will occur in the inner loop, causing infinite loop. Exit immediately.
+            if (path.isEmpty()) {
+                break;
+            }
 
             while (!path.isEmpty()) {
                 // Check battery before each movement
