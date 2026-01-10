@@ -155,6 +155,9 @@ int main(int argc, char** argv) {
         }
 
         while (true) {
+            // Progress guard: Save state at start of iteration to detect no-progress iterations
+            Position prevPos = pos;
+            int prevBattery = bm.getBattery();
             // Check if we've reached the dock in return-to-dock mode
             if (returnToDockMode && pos == grid.dockPosition) {
                 // Terminate execution when dock is reached
@@ -311,6 +314,19 @@ int main(int argc, char** argv) {
 
             // If we reached dock in return-to-dock mode, exit main loop
             if (returnToDockMode && pos == grid.dockPosition) {
+                break;
+            }
+
+            // Progress guard: Check if any progress was made this iteration
+            // Progress is defined as: position changed OR battery changed
+            // Note: If we broke early above, we don't reach here - those breaks are valid exits
+            bool positionChanged = !(pos == prevPos);
+            bool batteryChanged = (bm.getBattery() != prevBattery);
+
+            // If no progress was made in any dimension, we're in a deadlock - exit gracefully
+            if (!positionChanged && !batteryChanged) {
+                // No progress: position and battery both unchanged after full iteration
+                // This indicates a logical deadlock - terminate to avoid infinite loop
                 break;
             }
         }
