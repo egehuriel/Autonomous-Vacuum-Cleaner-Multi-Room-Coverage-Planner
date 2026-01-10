@@ -1,5 +1,4 @@
 # Autonomous Vacuum Cleaner – Multi-Room Coverage Planner
-CSE 211 - Data Structures Term Project
 
 ## Project Overview
 This project aims to design and implement **a coverage path planning system** for an autonomous vaccum cleaner operating in a multi-room indoor enviroment.
