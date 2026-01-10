@@ -6,7 +6,6 @@
 #include <thread>
 #include <cstdlib>
 
-// Define static const member
 const int TUI::FAST_MODE_DELAY_MS;
 
 TUI::TUI() : mode(DisplayMode::STEP) {}
@@ -54,17 +53,13 @@ void TUI::render(const GridModel& grid, const Position& vacuumPos, int battery) 
     std::cout << "=== Vacuum Cleaner Simulation ===\n";
     std::cout << "Battery: " << battery << "\n\n";
     
-    // Print grid with vacuum overlay
     for (int r = 0; r < grid.R(); r++) {
         for (int c = 0; c < grid.C(); c++) {
             if (vacuumPos.r == r && vacuumPos.c == c) {
-                // Overlay vacuum position
                 std::cout << 'V';
             } else if (grid.isCleaned(r, c)) {
-                // Show cleaned cells with dot
                 std::cout << '.';
             } else {
-                // Show normal cell type
                 std::cout << cellTypeToChar(grid, r, c);
             }
         }
@@ -75,11 +70,9 @@ void TUI::render(const GridModel& grid, const Position& vacuumPos, int battery) 
 
 void TUI::waitForNext() {
     if (mode == DisplayMode::STEP) {
-        // Wait for Enter key press
         std::cout << "Press Enter to continue...";
         std::cin.get();
     } else {
-        // Fast mode: sleep
         std::this_thread::sleep_for(std::chrono::milliseconds(FAST_MODE_DELAY_MS));
     }
 }
@@ -89,7 +82,6 @@ void TUI::printSummary(const GridModel& grid, int totalSteps, int totalBatteryUs
     
     std::cout << "=== Simulation Complete ===\n\n";
     
-    // Count cleaned cells
     int cleanedCount = 0;
     int totalFloorCount = 0;
     for (int r = 0; r < grid.R(); r++) {
@@ -108,7 +100,6 @@ void TUI::printSummary(const GridModel& grid, int totalSteps, int totalBatteryUs
     std::cout << "Floors Cleaned: " << cleanedCount << " / " << totalFloorCount << "\n";
     std::cout << "Coverage: " << (totalFloorCount > 0 ? (cleanedCount * 100 / totalFloorCount) : 0) << "%\n\n";
     
-    // Print final grid state
     std::cout << "Final Grid State:\n";
     for (int r = 0; r < grid.R(); r++) {
         for (int c = 0; c < grid.C(); c++) {
